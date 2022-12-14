@@ -1,28 +1,57 @@
 # Simple EKS Cluster
 
+## Purpose
+
+Minimal terraform, helm charts and docker image to run a simple hello world application in 
+
 ## Prerequisites
 
-To run the terraform, you need an AWS IAM user with strong permissions against IAM and EKS. For the purposes of this project, my user had the following permissions:
+To run the terraform, you need an AWS IAM user with strong permissions against IAM and EKS. A real world application would need a user with more granular permissions specific to this purpose. My user had the following permissions:
 
 * `iam:*` on `*`
 * `eks:*` on `*`
 * `ec2:*` on `*` - might not be necessary
 
-These are obviously too generous for any real-world AWS environment and would need to be scaled back.
+Otherwise - I used:
+* helm `v3.10.1`
+* terraform `v1.3.5`
+* awscli `2.8.8`
 
-Tested with helm `v3.10.1`
+## Contents
 
-## Steps
+* **helm** - home of simple-eks-hello - helm chart for this example
+* **terraform** - set of terraform modules to build out EKS and supporting infra
+* **image** - docker build for the hello world docker container
+
+## Installation Steps
 
 ### Run Terraform
 
-FIXME
+```
+# terraforms are located here
+cd terraform
+
+# run terraform
+terraform init
+terraform apply
+
+# back to root when done
+cd ..
+```
 
 ### Point kubectl at Control Plane
 
-`aws eks --region us-west-1 update-kubeconfig --name example`
+```
+aws eks --region us-west-1 update-kubeconfig --name example
+```
+
+### Build and Push Docker Image (Optional)
+
+Instructions for building and pushing the docker image are in `image`. If you choose not to build and deploy the image, the helm chart will deploy the default, which was built via the steps and code in `image`. 
 
 ### Install nginx ingress controller
+
+This could be incorporated into the helm chart.
 
 ```
 helm upgrade --install ingress-nginx ingress-nginx \
@@ -71,3 +100,7 @@ helm uninstall ingress-nginx \
 
 ### Terraform destroy
 
+```
+cd terraform
+terraform destroy
+```
