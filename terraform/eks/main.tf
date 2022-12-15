@@ -1,6 +1,6 @@
-resource "aws_eks_cluster" "example" {
-  name     = "example"
-  role_arn = aws_iam_role.example.arn
+resource "aws_eks_cluster" "cluster" {
+  name     = "cluster"
+  role_arn = aws_iam_role.cluster.arn
 
   vpc_config {
     subnet_ids = var.subnet_ids
@@ -9,13 +9,13 @@ resource "aws_eks_cluster" "example" {
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
   # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
   depends_on = [
-    aws_iam_role_policy_attachment.example-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.example-AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.cluster-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.cluster-AmazonEKSVPCResourceController,
   ]
 }
 
-resource "aws_iam_role" "example" {
-  name = "eks-cluster-example"
+resource "aws_iam_role" "cluster" {
+  name = "eks-cluster-role"
 
   assume_role_policy = <<POLICY
 {
@@ -33,14 +33,14 @@ resource "aws_iam_role" "example" {
 POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "example-AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.example.name
+  role       = aws_iam_role.cluster.name
 }
 
 # Optionally, enable Security Groups for Pods
 # Reference: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html
-resource "aws_iam_role_policy_attachment" "example-AmazonEKSVPCResourceController" {
+resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.example.name
+  role       = aws_iam_role.cluster.name
 }

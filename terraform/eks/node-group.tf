@@ -1,7 +1,7 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_node_group
 
 resource "aws_eks_node_group" "nodegroup" {
-  cluster_name    = aws_eks_cluster.example.name
+  cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = "nodegroup"
   node_role_arn   = aws_iam_role.nodegroup.arn
   subnet_ids      = var.subnet_ids
